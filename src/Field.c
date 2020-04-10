@@ -35,23 +35,23 @@ extern Field *Field_new(int length, int depth) {
     this->depth = depth;
 
     // Allocation de la matrice de pointeurs
-    this->grid = (Tile ***)calloc(depth*length, sizeof(Tile **));
+    this->grid = (Tile ***)calloc(length, sizeof(Tile **));
     if (this->grid == NULL) {
         fprintf(stderr, "Fatal: unable to allocate %zu bytes.\n", sizeof(Tile **));
         exit(EXIT_FAILURE);
     }
 
     // Initialisation de chaque Tile dans la matrice
-    for (int i=0; i<depth; i++) {
-        this->grid[i] = (Tile **) calloc(length, sizeof(Tile *));
+    for (int i=0; i<length; i++) {
+        this->grid[i] = (Tile **) calloc(depth, sizeof(Tile *));
         if (this->grid[i] == NULL) {
             fprintf(stderr, "Fatal: unable to allocate %zu bytes.\n", sizeof(Tile *));
             exit(EXIT_FAILURE);
         }
-        for (int j=0; j<length; j++) {
+        for (int j=0; j<depth; j++) {
             // printf("New Tile creation %d %d\n", i, j);
             if (i == 0 || j == 0 || 
-                i == depth -1 || j == length -1 ||
+                i == length -1 || j == depth -1 ||
                 (i%2 == 1 && j%2 == 1)) {
                 this->grid[i][j] = Tile_new(WALL, i, j);
             } else {
