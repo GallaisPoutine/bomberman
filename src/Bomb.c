@@ -60,8 +60,8 @@ extern void Bomb_start_timer(Bomb *this) {
 }
 
 extern void Bomb_explode(Bomb *this) {
-    // TODO remove
-    printf("Bomb exploding\n");
+    // TODO remove and manage
+    printf("\n\rBomb exploding\n\r");
 
 
     // TODO destroy things

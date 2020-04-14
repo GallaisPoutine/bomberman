@@ -16,14 +16,6 @@ struct Field_t {
     Tile ***grid;
 };
 
-static void Field_show_grid(Field *this) {
-    for (int i=0; i<this->length; i++) {
-        for (int j=0; i<this->depth; j++) {
-            printf("%d %d %d\n", i, j, this->grid[i][j]== NULL? 0:1);
-        }
-    }
-}
-
 extern Field *Field_new(int length, int depth) {
     Field *this = (Field *) malloc(sizeof(Field));
     if (this == NULL) {

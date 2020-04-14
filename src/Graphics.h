@@ -7,6 +7,8 @@
 
 #include "Field.h"
 
+extern int Graphics_getch(void);
+
 extern void Graphics_greetings(void);
 
 extern void Window_exit(void);
