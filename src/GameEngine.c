@@ -4,16 +4,16 @@
 
 /**
  * IDEA BOX
- * 
+ *
  * Use mqueue to manage events.
- * 
- * Compose with multiple windows 
+ *
+ * Compose with multiple windows
  * to allow log messages.
- *  
+ *
  * Put all free in GE_stop
  * (Multiple arguments function ?).
- * 
- * 
+ *
+ *
  **/
 
 #include "GameEngine.h"
@@ -101,7 +101,7 @@ static void mreceive(char *buffer) {
         exit(EXIT_FAILURE);
     }
 
-    int error = (int)mq_receive(mqueue, buffer, sizeof(adapter_t), 0);
+    int error = (int)mq_receive(mqueue, buffer, MAX_MSG_SIZE, 0);
     if (error == -1) {
         perror("ERROR receiving message in mqueue");
         exit(EXIT_FAILURE);
@@ -111,6 +111,7 @@ static void mreceive(char *buffer) {
     if (error == -1) {
         GameEngine_stop();
         fprintf(stderr, "[mreceive]\n");
+	printf("%s\n", buffer);
         perror("ERROR closing mqueue");
         exit(EXIT_FAILURE);
     }
@@ -131,7 +132,7 @@ static void *keypad_listener() {
 
 static void run(void) {
     adapter_t msg = {.msg = 0};
-    
+
     for ever {
         mreceive(msg.buffer);
 
@@ -147,7 +148,7 @@ static void run(void) {
 extern void GameEngine_start(void) {
     minit();
     Graphics_greetings();
-    
+
     int error = pthread_create(&thread_keypad_listener, NULL,
                                 &keypad_listener, NULL);
     if (error != 0) {
@@ -161,7 +162,7 @@ extern void GameEngine_start(void) {
     Field_add_player(f, p);
     Graphics_display_field(f);
     Player_pose_bomb(p);
-    
+
     run();
 
 
