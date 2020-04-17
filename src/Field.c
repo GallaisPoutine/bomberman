@@ -95,3 +95,37 @@ extern void Field_add_player(Field *this, Player *player){
         Tile_add_player(tile, player);
     }
 }
+
+// TODO optimize
+extern void Field_move_player(Field *this, Player *player, Move m) {
+    int x = Player_get_X(player);
+    int y = Player_get_Y(player);
+
+    switch (m) {
+        case UP:
+            y = Player_get_Y(player) -1;
+            break;
+        case DOWN:
+            y = Player_get_Y(player) +1;
+            break;
+        case LEFT:
+            x = Player_get_X(player) -1;
+            break;
+        case RIGHT:
+            x = Player_get_X(player) +1;
+            break;
+        default:
+            assert (m == NONE);
+            break;
+    }
+
+    Tile *tile = Field_get_tile(this, Player_get_X(player), Player_get_Y(player));
+    Tile *tile_next = Field_get_tile(this, x, y);
+
+    // assert(Tile_get_type(tile_next) == GROUND);
+    if (Tile_get_type(tile_next) == GROUND) {
+        Tile_remove_player(tile);
+        Tile_add_player(tile_next, player);
+        Player_move(player, m);
+    }
+}

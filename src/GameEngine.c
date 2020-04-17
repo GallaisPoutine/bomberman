@@ -44,7 +44,6 @@ typedef union {
     char buffer[MAX_MSG_SIZE];
 } adapter_t;
 
-static mqd_t mqueue;
 static pthread_t thread_keypad_listener;
 
 static void minit(void) {
@@ -57,7 +56,7 @@ static void minit(void) {
     };
 
     /* Création et ouverture de la BAL */
-    mqueue = mq_open(MQ_NAME, O_CREAT | O_RDWR, 0777, &attr);
+    mqd_t mqueue = mq_open(MQ_NAME, O_CREAT | O_RDWR, 0777, &attr);
     if (mqueue == -1) {
         GameEngine_stop();
         perror("ERROR creating mqueue");
@@ -73,13 +72,12 @@ static void minit(void) {
 }
 
 static void msend(char *buffer) {
-    mqueue = mq_open(MQ_NAME, O_WRONLY);
+    mqd_t mqueue = mq_open(MQ_NAME, O_WRONLY);
     if (mqueue == -1) {
         perror("ERROR opening mqueue");
         exit(EXIT_FAILURE);
     }
 
-    /* Envoi de l'ordre à travers la BAL */
     int error = mq_send(mqueue, buffer, MAX_MSG_SIZE, 0);
     if (error == -1) {
         perror("ERROR sending char to mqueue");
@@ -95,7 +93,7 @@ static void msend(char *buffer) {
 }
 
 static void mreceive(char *buffer) {
-    mqueue = mq_open(MQ_NAME, O_RDWR);
+    mqd_t mqueue = mq_open(MQ_NAME, O_RDWR);
     if (mqueue == -1) {
         perror("ERROR opening mqueue");
         exit(EXIT_FAILURE);
@@ -111,7 +109,6 @@ static void mreceive(char *buffer) {
     if (error == -1) {
         GameEngine_stop();
         fprintf(stderr, "[mreceive]\n");
-	printf("%s\n", buffer);
         perror("ERROR closing mqueue");
         exit(EXIT_FAILURE);
     }
@@ -121,7 +118,7 @@ static void *keypad_listener() {
     adapter_t msg;
     for ever {
         msg.msg = Graphics_getch();
-        if (msg.msg == 'z' || msg.msg == 'q' ||
+	if (msg.msg == 'z' || msg.msg == 'q' ||
             msg.msg == 's' || msg.msg == 'd' ||
             msg.msg == 'p') {
             msend(msg.buffer);
@@ -130,18 +127,35 @@ static void *keypad_listener() {
     return NULL;
 }
 
-static void run(void) {
+static void run(Field *f, Player *p) {
     adapter_t msg = {.msg = 0};
 
     for ever {
         mreceive(msg.buffer);
 
-        if (msg.msg == 'o') {
-            GameEngine_stop();
-            exit(EXIT_SUCCESS);
-        } else {
-            Window_display(20, 0, "%c", msg.msg);
+        switch (msg.msg) {
+            case 'z':
+                Field_move_player(f, p, UP);
+                break;
+            case 'q':
+                Field_move_player(f, p, LEFT);
+                break;
+            case 's':
+                Field_move_player(f, p, DOWN);
+                break;
+            case 'd':
+                Field_move_player(f, p, RIGHT);
+                break;
+            case 'p':
+		        //pthread_cancel ?
+                GameEngine_stop();
+                exit(EXIT_SUCCESS);
+                break;
+            default:
+                break;
         }
+
+        Graphics_display_field(f);
     }
 }
 
@@ -163,8 +177,7 @@ extern void GameEngine_start(void) {
     Graphics_display_field(f);
     Player_pose_bomb(p);
 
-    run();
-
+    run(f, p);
 
     Player_free(p);
     Field_free(f);

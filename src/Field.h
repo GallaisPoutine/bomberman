@@ -24,4 +24,6 @@ extern int Field_get_depth(Field *this);
 
 extern void Field_add_player(Field *this, Player *player);
 
+extern void Field_move_player(Field *this, Player *player, Move m);
+
 #endif //BOMBERMAN_FIELD_H

@@ -53,18 +53,21 @@ extern void Player_set_Y(Player *this, int y) {
 
 extern void Player_move(Player *this, Move m) {
     switch (m) {
-    case UP:
-        /* code */
-        break;
-    case DOWN:
-        break;
-    case LEFT:
-        break;
-    case RIGHT:
-        break;
-    default:
-        assert (m == NONE);
-        break;
+        case UP:
+            Position_set_Y(this->pos, Player_get_Y(this) -1);
+            break;
+        case DOWN:
+            Position_set_Y(this->pos, Player_get_Y(this) +1);
+            break;
+        case LEFT:
+            Position_set_X(this->pos, Player_get_X(this) -1);
+            break;
+        case RIGHT:
+            Position_set_X(this->pos, Player_get_X(this) +1);
+            break;
+        default:
+            assert (m == NONE);
+            break;
     }
 }
 
