@@ -147,7 +147,6 @@ static void run(Field *f, Player *p) {
                 Field_move_player(f, p, RIGHT);
                 break;
             case 'p':
-		        //pthread_cancel ?
                 GameEngine_stop();
                 exit(EXIT_SUCCESS);
                 break;
