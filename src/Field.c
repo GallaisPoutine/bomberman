@@ -8,7 +8,7 @@
 #include <malloc.h>
 #include <stdlib.h>
 
-// #include "Tile.h"
+#define BOMB_INTENSITY (3)
 
 struct Field_t {
     int length;
@@ -87,8 +87,7 @@ extern int Field_get_depth(Field *this) {
 
 extern void Field_add_player(Field *this, Player *player){
     printf("Player Added\n");
-    // TODO implement player in field
-    // Check if he's in a wall
+    // TODO check if he's in a wall
     Tile * tile = Field_get_tile(this, Player_get_X(player), Player_get_Y(player));
     assert(Tile_get_type(tile) == GROUND);
     if (Tile_get_type(tile) == GROUND) {
@@ -96,7 +95,7 @@ extern void Field_add_player(Field *this, Player *player){
     }
 }
 
-// TODO optimize
+// TODO optimize switch case
 extern void Field_move_player(Field *this, Player *player, Move m) {
     int x = Player_get_X(player);
     int y = Player_get_Y(player);
@@ -122,10 +121,28 @@ extern void Field_move_player(Field *this, Player *player, Move m) {
     Tile *tile = Field_get_tile(this, Player_get_X(player), Player_get_Y(player));
     Tile *tile_next = Field_get_tile(this, x, y);
 
-    // assert(Tile_get_type(tile_next) == GROUND);
     if (Tile_get_type(tile_next) == GROUND) {
         Tile_remove_player(tile);
         Tile_add_player(tile_next, player);
         Player_move(player, m);
+    }
+}
+
+extern void Field_bomb_explosion(Field *this, Bomb *b) {
+    int x = Bomb_get_X(b);
+    int y = Bomb_get_Y(b);
+
+    for (int i=x -BOMB_INTENSITY; i<=x +BOMB_INTENSITY; i++) {
+        Tile *ttmp = Field_get_tile(this, i, y);
+        if (Tile_get_type(ttmp) != WALL && Tile_has_player(ttmp)) {
+            Tile_remove_player(ttmp);
+        }
+    }
+
+    for (int j=y -BOMB_INTENSITY; j<=y +BOMB_INTENSITY; j++) {
+        Tile *ttmp = Field_get_tile(this, x, j);
+        if (Tile_get_type(ttmp) != WALL && Tile_has_player(ttmp)) {
+            Tile_remove_player(ttmp);
+        }
     }
 }

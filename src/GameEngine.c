@@ -33,10 +33,7 @@
 
 #define ever (;;)
 
-
-
 static pthread_t thread_keypad_listener;
-
 
 static void *keypad_listener() {
     adapter_t msg;
@@ -44,14 +41,14 @@ static void *keypad_listener() {
         msg.msg = Graphics_getch();
         if (msg.msg == 'z' || msg.msg == 'q' ||
             msg.msg == 's' || msg.msg == 'd' ||
-            msg.msg == 'p') {
+            msg.msg == 'p' || msg.msg == 'j') {
             Queue_send(msg.buffer);
         }
     }
     return NULL;
 }
 
-static void run(Field *f, Player *p) {
+static void run(Field *f, Player *p, Bomb *b) {
     adapter_t msg = {.msg = 0};
     for ever {
         Queue_receive(msg.buffer);
@@ -69,17 +66,20 @@ static void run(Field *f, Player *p) {
             case 'd':
                 Field_move_player(f, p, RIGHT);
                 break;
+            case 'j':
+                b = Player_pose_bomb(p);
+                break;
+            case 'e':
+                // Bomb_explosion was called
+                // send event 'e'
+                Field_bomb_explosion(f, b);
+                break;
             case 'p':
                 GameEngine_stop();
                 exit(EXIT_SUCCESS);
-            case 'e':
-                // TODO manage
-                Field_move_player(f, p, RIGHT);
-                break;
             default:
                 break;
         }
-
         Graphics_display_field(f);
     }
 }
@@ -100,9 +100,9 @@ extern void GameEngine_start(void) {
     Player *p = Player_new(2, 24);
     Field_add_player(f, p);
     Graphics_display_field(f);
-    Player_pose_bomb(p);
+    Bomb *b;
 
-    run(f, p);
+    run(f, p, b);
 
     Player_free(p);
     Field_free(f);
