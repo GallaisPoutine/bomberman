@@ -9,6 +9,7 @@
 #include <stdlib.h>
 
 #include "Position.h"
+#include "Queue.h"
 #include "Timer.h"
 
 struct Bomb_t {
@@ -25,9 +26,6 @@ extern Bomb * Bomb_new(int x, int y) {
     }
 
     this->pos = Position_new(x, y);
-    // Position_set_X(this->pos, 0);
-    // Position_set_Y(this->pos, 0);
-
     return this;
 }
 
@@ -62,9 +60,10 @@ extern void Bomb_start_timer(Bomb *this) {
 // TODO For tnow this is clearly a stub
 // Send event in BAL ??
 extern void Bomb_explode(Bomb *this) {
-    // TODO remove and manage
-    // printf("\n\rBomb exploding\n\r");
+    // TODO manage
+    adapter_t msg = {.msg = 'e'};
 
+    Queue_send(msg.buffer);
 
     // TODO destroy things
     Bomb_free(this);

@@ -5,6 +5,7 @@
 #ifndef BOMBERMAN_FIELD_H
 #define BOMBERMAN_FIELD_H
 
+#include "Bomb.h"
 #include "Player.h"
 #include "Tile.h"
 
@@ -25,5 +26,7 @@ extern int Field_get_depth(Field *this);
 extern void Field_add_player(Field *this, Player *player);
 
 extern void Field_move_player(Field *this, Player *player, Move m);
+
+extern void Field_bomb_explosion(Field *this, Bomb *b);
 
 #endif //BOMBERMAN_FIELD_H
