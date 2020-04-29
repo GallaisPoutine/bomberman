@@ -59,9 +59,11 @@ extern void Bomb_start_timer(Bomb *this) {
     Timer_start(this->timer);
 }
 
+// TODO For tnow this is clearly a stub
+// Send event in BAL ??
 extern void Bomb_explode(Bomb *this) {
     // TODO remove and manage
-    printf("\n\rBomb exploding\n\r");
+    // printf("\n\rBomb exploding\n\r");
 
 
     // TODO destroy things

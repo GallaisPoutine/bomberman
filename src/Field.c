@@ -8,8 +8,6 @@
 #include <malloc.h>
 #include <stdlib.h>
 
-// #include "Tile.h"
-
 struct Field_t {
     int length;
     int depth;
@@ -41,7 +39,6 @@ extern Field *Field_new(int length, int depth) {
             exit(EXIT_FAILURE);
         }
         for (int j=0; j<depth; j++) {
-            // printf("New Tile creation %d %d\n", i, j);
             if (i == 0 || j == 0 || 
                 i == length -1 || j == depth -1 ||
                 (i%2 == 1 && j%2 == 1)) {
@@ -52,10 +49,10 @@ extern Field *Field_new(int length, int depth) {
         }
     }
 
-    // Field_show_grid(this);
     return this;
 }
 
+// TODO memory leaks around here
 extern void Field_free(Field *this) {
     assert(this != NULL);
     for (int i=0; i<this->length; i++) {
@@ -87,8 +84,7 @@ extern int Field_get_depth(Field *this) {
 
 extern void Field_add_player(Field *this, Player *player){
     printf("Player Added\n");
-    // TODO implement player in field
-    // Check if he's in a wall
+    // TODO Check if he's in a wall
     Tile * tile = Field_get_tile(this, Player_get_X(player), Player_get_Y(player));
     assert(Tile_get_type(tile) == GROUND);
     if (Tile_get_type(tile) == GROUND) {
@@ -122,7 +118,6 @@ extern void Field_move_player(Field *this, Player *player, Move m) {
     Tile *tile = Field_get_tile(this, Player_get_X(player), Player_get_Y(player));
     Tile *tile_next = Field_get_tile(this, x, y);
 
-    // assert(Tile_get_type(tile_next) == GROUND);
     if (Tile_get_type(tile_next) == GROUND) {
         Tile_remove_player(tile);
         Tile_add_player(tile_next, player);

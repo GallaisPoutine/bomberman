@@ -24,7 +24,6 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 
 #include "Field.h"
 #include "Graphics.h"
@@ -36,8 +35,6 @@
 #define MQ_NAME  "/mq_event"
 #define MQ_MAX_MESSAGES (10)
 #define MAX_MSG_SIZE (1024)
-
-#define END_OF_STR '\0'
 
 typedef union {
     char msg;
@@ -127,6 +124,11 @@ static void *keypad_listener() {
     return NULL;
 }
 
+static void free_entities(Field *f, Player *p) {
+    Player_free(p);
+    Field_free(f);
+}
+
 static void run(Field *f, Player *p) {
     adapter_t msg = {.msg = 0};
 
@@ -174,14 +176,10 @@ extern void GameEngine_start(void) {
     Player *p = Player_new(2, 25);
     Field_add_player(f, p);
     Graphics_display_field(f);
-    Player_pose_bomb(p);
 
     run(f, p);
+    free_entities(f, p);
 
-    Player_free(p);
-    Field_free(f);
-
-    sleep(2);
     GameEngine_stop();
 }
 
