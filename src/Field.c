@@ -8,7 +8,7 @@
 #include <malloc.h>
 #include <stdlib.h>
 
-#define BOMB_INTENSITY (3)
+#include "Queue.h"
 
 struct Field_t {
     int length;
@@ -130,15 +130,17 @@ extern void Field_move_player(Field *this, Player *player, Move m) {
 extern void Field_bomb_has_been_planted(Field *this, Player *p) {
     Tile * tile = Field_get_tile(this, Player_get_X(p), Player_get_Y(p));
     assert(Tile_get_type(tile) == GROUND);
-    Bomb *b = Player_pose_bomb(p);
-    Tile *t = Field_get_tile(this, Bomb_get_X(b), Bomb_get_Y(b));
-    Tile_add_bomb(t, b);
+    bomb_adapter_t b = {.bomb = Player_pose_bomb(p)};
+    Tile *t = Field_get_tile(this, Bomb_get_X(b.bomb), Bomb_get_Y(b.bomb));
+    Tile_add_bomb(t, b.bomb);
+    Queue_send(MQ_BOMBS_NAME, b.buffer);
 }
 
-extern void Field_bomb_explosion(Field *this, Tile *t) {
-    Bomb *b = Tile_get_bomb(t);
-    int x = Bomb_get_X(b);
-    int y = Bomb_get_Y(b);
+extern void Field_bomb_explosion(Field *this) {
+    bomb_adapter_t b = {.buffer = 0};
+    Queue_receive(MQ_BOMBS_NAME, b.buffer);
+    int x = Bomb_get_X(b.bomb);
+    int y = Bomb_get_Y(b.bomb);
 
     for (int i=x -BOMB_INTENSITY; i<=x +BOMB_INTENSITY; i++) {
         Tile *ttmp = Field_get_tile(this, i, y);

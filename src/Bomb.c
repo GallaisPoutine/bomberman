@@ -63,7 +63,7 @@ extern void Bomb_explode(Bomb *this) {
     // TODO manage
     adapter_t msg = {.msg = EV_EXPLODE};
 
-    Queue_send(msg.buffer);
+    Queue_send(MQ_EVENT_NAME, msg.buffer);
 
     // TODO destroy things
     Bomb_free(this);

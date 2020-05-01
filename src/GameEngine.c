@@ -41,7 +41,7 @@ static void *keypad_listener() {
         if (msg.msg == EV_UP || msg.msg == EV_DOWN ||
             msg.msg == EV_LEFT || msg.msg == EV_RIGHT ||
             msg.msg == EV_PAUSE || msg.msg == EV_BOMB) {
-            Queue_send(msg.buffer);
+            Queue_send(MQ_EVENT_NAME, msg.buffer);
         }
     }
     return NULL;
@@ -55,7 +55,7 @@ static void free_entities(Field *f, Player *p) {
 static void run(Field *f, Player *p) {
     adapter_t msg = {.msg = 0};
     for ever {
-        Queue_receive(msg.buffer);
+        Queue_receive(MQ_EVENT_NAME, msg.buffer);
 
         switch (msg.msg) {
         case EV_UP:
@@ -75,7 +75,7 @@ static void run(Field *f, Player *p) {
             break;
         case EV_EXPLODE:
             // TODO find a way to transmit tile 
-            // Field_bomb_explosion(f, t);
+            Field_bomb_explosion(f);
             break;
         case EV_PAUSE:
             GameEngine_stop();
@@ -88,7 +88,8 @@ static void run(Field *f, Player *p) {
 }
 
 extern void GameEngine_start(void) {
-    Queue_init();
+    Queue_init(MQ_EVENT_NAME);
+    Queue_init(MQ_BOMBS_NAME);
     Graphics_greetings();
 
     int error = pthread_create(&thread_keypad_listener, NULL,
@@ -112,7 +113,8 @@ extern void GameEngine_start(void) {
 
 extern void GameEngine_stop(void) {
     Window_exit();
-    Queue_unlink();
+    Queue_unlink(MQ_EVENT_NAME);
+    Queue_unlink(MQ_BOMBS_NAME);
 
     int error = pthread_cancel(thread_keypad_listener);
     if (error != 0) {

@@ -5,6 +5,8 @@
 #ifndef BOMBERMAN_QUEUE_H
 #define BOMBERMAN_QUEUE_H
 
+#include "Bomb.h"
+
 #define EV_UP       'z'
 #define EV_DOWN     's'
 #define EV_LEFT     'q'
@@ -13,7 +15,8 @@
 #define EV_BOMB     'j'
 #define EV_EXPLODE  'e'
 
-#define MQ_NAME  "/mq_event"
+#define MQ_EVENT_NAME   "/mq_event"
+#define MQ_BOMBS_NAME    "/mq_bombs"
 #define MQ_MAX_MESSAGES (10)
 #define MAX_MSG_SIZE (1024)
 
@@ -22,12 +25,17 @@ typedef union {
     char buffer[MAX_MSG_SIZE];
 } adapter_t;
 
-extern void Queue_init(void);
+typedef union {
+    Bomb *bomb;
+    char buffer[MAX_MSG_SIZE];
+} bomb_adapter_t;
 
-extern void Queue_send(char *buffer);
+extern void Queue_init(char *name);
 
-extern void Queue_receive(char *buffer);
+extern void Queue_send(char *name, char *buffer);
 
-extern void Queue_unlink(void);
+extern void Queue_receive(char *name, char *buffer);
+
+extern void Queue_unlink(char *name);
 
 #endif //BOMBERMAN_QUEUE_H

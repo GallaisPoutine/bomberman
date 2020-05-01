@@ -5,6 +5,8 @@
 #ifndef BOMBERMAN_BOMB_H
 #define BOMBERMAN_BOMB_H
 
+#define BOMB_INTENSITY (3)
+
 /**
  *
  */

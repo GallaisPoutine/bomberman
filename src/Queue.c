@@ -10,7 +10,7 @@
 #include <stdlib.h>
 
 
-extern void Queue_init(void) {
+extern void Queue_init(char *name) {
     // Paramètres de la BAL
     struct mq_attr attr = {
             .mq_maxmsg = MQ_MAX_MESSAGES,
@@ -20,7 +20,7 @@ extern void Queue_init(void) {
     };
 
     /* Création et ouverture de la BAL */
-    mqd_t mqueue = mq_open(MQ_NAME, O_CREAT | O_RDWR, 0777, &attr);
+    mqd_t mqueue = mq_open(name, O_CREAT | O_RDWR, 0777, &attr);
     if (mqueue == -1) {
         GameEngine_stop();
         perror("ERROR creating mqueue");
@@ -35,8 +35,8 @@ extern void Queue_init(void) {
     }
 }
 
-extern void Queue_send(char *buffer) {
-    mqd_t mqueue = mq_open(MQ_NAME, O_WRONLY);
+extern void Queue_send(char *name, char *buffer) {
+    mqd_t mqueue = mq_open(name, O_WRONLY);
     if (mqueue == -1) {
         perror("ERROR opening mqueue");
         exit(EXIT_FAILURE);
@@ -56,8 +56,8 @@ extern void Queue_send(char *buffer) {
     }
 }
 
-extern void Queue_receive(char *buffer) {
-    mqd_t mqueue = mq_open(MQ_NAME, O_RDWR);
+extern void Queue_receive(char *name, char *buffer) {
+    mqd_t mqueue = mq_open(name, O_RDWR);
     if (mqueue == -1) {
         perror("ERROR opening mqueue");
         exit(EXIT_FAILURE);
@@ -78,8 +78,8 @@ extern void Queue_receive(char *buffer) {
     }
 }
 
-extern void Queue_unlink(void) {
-    int error = mq_unlink(MQ_NAME);
+extern void Queue_unlink(char *name) {
+    int error = mq_unlink(name);
     if (error == -1) {
         perror("ERROR unlinking mqueue");
         exit(EXIT_FAILURE);
