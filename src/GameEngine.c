@@ -38,9 +38,9 @@ static void *keypad_listener() {
     adapter_t msg;
     for ever {
         msg.msg = Graphics_getch();
-        if (msg.msg == 'z' || msg.msg == 'q' ||
-            msg.msg == 's' || msg.msg == 'd' ||
-            msg.msg == 'p' || msg.msg == 'j') {
+        if (msg.msg == EV_UP || msg.msg == EV_DOWN ||
+            msg.msg == EV_LEFT || msg.msg == EV_RIGHT ||
+            msg.msg == EV_PAUSE || msg.msg == EV_BOMB) {
             Queue_send(msg.buffer);
         }
     }
@@ -52,37 +52,36 @@ static void free_entities(Field *f, Player *p) {
     Field_free(f);
 }
 
-static void run(Field *f, Player *p, Bomb *b) {
+static void run(Field *f, Player *p) {
     adapter_t msg = {.msg = 0};
     for ever {
         Queue_receive(msg.buffer);
 
         switch (msg.msg) {
-            case 'z':
-                Field_move_player(f, p, UP);
-                break;
-            case 'q':
-                Field_move_player(f, p, LEFT);
-                break;
-            case 's':
-                Field_move_player(f, p, DOWN);
-                break;
-            case 'd':
-                Field_move_player(f, p, RIGHT);
-                break;
-            case 'j':
-                b = Player_pose_bomb(p);
-                break;
-            case 'e':
-                // Bomb_explosion was called
-                // send event 'e'
-                Field_bomb_explosion(f, b);
-                break;
-            case 'p':
-                GameEngine_stop();
-                exit(EXIT_SUCCESS);
-            default:
-                break;
+        case EV_UP:
+            Field_move_player(f, p, UP);
+            break;
+        case EV_LEFT:
+            Field_move_player(f, p, LEFT);
+            break;
+        case EV_DOWN:
+            Field_move_player(f, p, DOWN);
+            break;
+        case EV_RIGHT:
+            Field_move_player(f, p, RIGHT);
+            break;
+        case EV_BOMB:
+            Field_bomb_has_been_planted(f, p);
+            break;
+        case EV_EXPLODE:
+            // TODO find a way to transmit tile 
+            // Field_bomb_explosion(f, t);
+            break;
+        case EV_PAUSE:
+            GameEngine_stop();
+            exit(EXIT_SUCCESS);
+        default:
+            break;
         }
         Graphics_display_field(f);
     }
@@ -104,9 +103,8 @@ extern void GameEngine_start(void) {
     Player *p = Player_new(2, 24);
     Field_add_player(f, p);
     Graphics_display_field(f);
-    Bomb *b;
 
-    run(f, p, b);
+    run(f, p);
     free_entities(f, p);
     
     GameEngine_stop();

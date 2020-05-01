@@ -50,6 +50,10 @@ extern Type Tile_get_type(Tile *this) {
     return this->type;
 }
 
+extern Bomb *Tile_get_bomb(Tile *this) {
+    return this->bomb;
+}
+
 extern bool Tile_has_player(Tile *this) {
     return this->has_player;
 }
@@ -67,5 +71,17 @@ extern void Tile_remove_player(Tile *this) {
     if (this->has_player) {
         this->player = NULL;
         this->has_player = false;
+    }
+}
+
+extern void Tile_add_bomb(Tile *this, Bomb *bomb) {
+    this->bomb = bomb;
+    this->has_bomb = true;
+}
+
+extern void Tile_remove_bomb(Tile *this) {
+    if (this->has_bomb) {
+        this->bomb = NULL;
+        this->has_bomb = false;
     }
 }

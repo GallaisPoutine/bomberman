@@ -17,7 +17,7 @@
 
 #define BOMB        "0"
 #define EMPTY       " "
-#define EXPLOSION   "~"
+#define EXPLOSION   "#"
 #define PLAYER      "X"
 
 #define RESET "R"
@@ -103,6 +103,19 @@ static void Window_display_center(char *msg, ...) {
     Window_display(LINES/2, (COLS/2) -(strlen(msg)/2), msg);
 }
 
+static void Window_display_tile(Tile *t, int x, int y, int color) {
+    attron(color);
+    if (Tile_has_player(t)) {
+        Window_display(x, y, PLAYER);
+    } else if(Tile_has_bomb(t)) {
+        Window_display(x, y, BOMB);
+    } else {
+        // ASSERT ?
+        Window_display(x, y, EMPTY);
+    }
+    attroff(color);
+}
+
 extern void Window_display(int x, int y, char *msg, ...) {
     int error = mvprintw(x, y, msg);
     if (error == ERR) {
@@ -141,40 +154,13 @@ extern void Graphics_display_field(Field *field) {
             Tile *t = Field_get_tile(field, i, j);
             switch (Tile_get_type(t)) {
             case GROUND:
-                attron(COLOR_PAIR(GROUND_PAIR));
-                if (Tile_has_player(t)) {
-                    Window_display(i, j, PLAYER);
-                } else if(Tile_has_bomb(t)) {
-                    Window_display(i, j, BOMB);
-                } else {
-                    // ASSERT ?
-                    Window_display(i, j, EMPTY);
-                }
-                attroff(COLOR_PAIR(GROUND_PAIR));
+                Window_display_tile(t, i, j, COLOR_PAIR(GROUND_PAIR));
                 break;
             case WATER:
-                attron(COLOR_PAIR(WATER_PAIR));
-                if (Tile_has_player(t)) {
-                    Window_display(i, j, PLAYER);
-                } else if(Tile_has_bomb(t)) {
-                    Window_display(i, j, BOMB);
-                } else {
-                    // ASSERT ?
-                    Window_display(i, j, EMPTY);
-                }
-                attroff(COLOR_PAIR(WATER_PAIR));
+                Window_display_tile(t, i, j, COLOR_PAIR(WATER_PAIR));
                 break;
             case WALL:
-                attron(COLOR_PAIR(WALL_PAIR));
-                if (Tile_has_player(t)) {
-                    Window_display(i, j, PLAYER);
-                } else if(Tile_has_bomb(t)) {
-                    Window_display(i, j, BOMB);
-                } else {
-                    // ASSERT ?
-                    Window_display(i, j, EMPTY);
-                }
-                attroff(COLOR_PAIR(WALL_PAIR));
+                Window_display_tile(t, i, j, COLOR_PAIR(WALL_PAIR));
                 break;
             default:
                 assert(Tile_get_type(t) != GROUND);

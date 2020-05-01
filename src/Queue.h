@@ -5,6 +5,14 @@
 #ifndef BOMBERMAN_QUEUE_H
 #define BOMBERMAN_QUEUE_H
 
+#define EV_UP       'z'
+#define EV_DOWN     's'
+#define EV_LEFT     'q'
+#define EV_RIGHT    'd'
+#define EV_PAUSE    'p'
+#define EV_BOMB     'j'
+#define EV_EXPLODE  'e'
+
 #define MQ_NAME  "/mq_event"
 #define MQ_MAX_MESSAGES (10)
 #define MAX_MSG_SIZE (1024)

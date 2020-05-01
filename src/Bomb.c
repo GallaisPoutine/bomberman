@@ -61,7 +61,7 @@ extern void Bomb_start_timer(Bomb *this) {
 // Send event in BAL ??
 extern void Bomb_explode(Bomb *this) {
     // TODO manage
-    adapter_t msg = {.msg = 'e'};
+    adapter_t msg = {.msg = EV_EXPLODE};
 
     Queue_send(msg.buffer);
 

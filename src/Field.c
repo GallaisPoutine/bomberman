@@ -100,21 +100,21 @@ extern void Field_move_player(Field *this, Player *player, Move m) {
     int y = Player_get_Y(player);
 
     switch (m) {
-        case UP:
-            y = Player_get_Y(player) -1;
-            break;
-        case DOWN:
-            y = Player_get_Y(player) +1;
-            break;
-        case LEFT:
-            x = Player_get_X(player) -1;
-            break;
-        case RIGHT:
-            x = Player_get_X(player) +1;
-            break;
-        default:
-            assert (m == NONE);
-            break;
+    case UP:
+        y = Player_get_Y(player) -1;
+        break;
+    case DOWN:
+        y = Player_get_Y(player) +1;
+        break;
+    case LEFT:
+        x = Player_get_X(player) -1;
+        break;
+    case RIGHT:
+        x = Player_get_X(player) +1;
+        break;
+    default:
+        assert (m == NONE);
+        break;
     }
 
     Tile *tile = Field_get_tile(this, Player_get_X(player), Player_get_Y(player));
@@ -127,7 +127,16 @@ extern void Field_move_player(Field *this, Player *player, Move m) {
     }
 }
 
-extern void Field_bomb_explosion(Field *this, Bomb *b) {
+extern void Field_bomb_has_been_planted(Field *this, Player *p) {
+    Tile * tile = Field_get_tile(this, Player_get_X(p), Player_get_Y(p));
+    assert(Tile_get_type(tile) == GROUND);
+    Bomb *b = Player_pose_bomb(p);
+    Tile *t = Field_get_tile(this, Bomb_get_X(b), Bomb_get_Y(b));
+    Tile_add_bomb(t, b);
+}
+
+extern void Field_bomb_explosion(Field *this, Tile *t) {
+    Bomb *b = Tile_get_bomb(t);
     int x = Bomb_get_X(b);
     int y = Bomb_get_Y(b);
 
@@ -144,4 +153,6 @@ extern void Field_bomb_explosion(Field *this, Bomb *b) {
             Tile_remove_player(ttmp);
         }
     }
+
+    Tile_remove_bomb(Field_get_tile(this, x, y));
 }

@@ -27,6 +27,8 @@ extern Position *Tile_get_position(Tile * this);
 
 extern Type Tile_get_type(Tile *this);
 
+extern Bomb *Tile_get_bomb(Tile *this);
+
 extern bool Tile_has_player(Tile *this);
 
 extern bool Tile_has_bomb(Tile *this);
@@ -34,5 +36,9 @@ extern bool Tile_has_bomb(Tile *this);
 extern void Tile_add_player(Tile *this, Player *player);
 
 extern void Tile_remove_player(Tile *this);
+
+extern void Tile_add_bomb(Tile *this, Bomb *bomb);
+
+extern void Tile_remove_bomb(Tile *this);
 
 #endif //BOMBERMAN_TIMER_H
