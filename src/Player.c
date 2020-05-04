@@ -25,7 +25,6 @@ extern Player *Player_new(int x, int y) {
     }
 
     this->pos = Position_new(x, y);
-
     return this;
 }
 

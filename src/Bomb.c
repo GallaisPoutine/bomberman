@@ -66,5 +66,5 @@ extern void Bomb_explode(Bomb *this) {
     Queue_send(MQ_EVENT_NAME, msg.buffer);
 
     // TODO destroy things
-    Bomb_free(this);
+    Timer_free(this->timer);
 }

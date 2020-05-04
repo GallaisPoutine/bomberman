@@ -128,10 +128,9 @@ extern void Field_move_player(Field *this, Player *player, Move m) {
 }
 
 extern void Field_bomb_has_been_planted(Field *this, Player *p) {
-    Tile * tile = Field_get_tile(this, Player_get_X(p), Player_get_Y(p));
-    assert(Tile_get_type(tile) == GROUND);
     bomb_adapter_t b = {.bomb = Player_pose_bomb(p)};
     Tile *t = Field_get_tile(this, Bomb_get_X(b.bomb), Bomb_get_Y(b.bomb));
+    assert(Tile_get_type(t) == GROUND);
     Tile_add_bomb(t, b.bomb);
     Queue_send(MQ_BOMBS_NAME, b.buffer);
 }
@@ -157,4 +156,5 @@ extern void Field_bomb_explosion(Field *this) {
     }
 
     Tile_remove_bomb(Field_get_tile(this, x, y));
+    // Bomb_free(b.bomb);
 }

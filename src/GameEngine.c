@@ -101,7 +101,7 @@ extern void GameEngine_start(void) {
     }
 
     Field *f = Field_new(10, 50);
-    Player *p = Player_new(2, 24);
+    Player *p = Player_new(4, 24);
     Field_add_player(f, p);
     Graphics_display_field(f);
 

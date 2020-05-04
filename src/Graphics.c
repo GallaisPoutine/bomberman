@@ -6,6 +6,7 @@
 
 #include <assert.h>
 #include <ncurses.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 // sleep
@@ -25,77 +26,57 @@
 // SINGLETON ???
 static WINDOW * window;
 
+static void Window_throw_error(bool b, char* msg) {
+    if (b) {
+        fprintf(stderr, "%s\n", msg);
+        exit(EXIT_FAILURE);
+    }
+}
+
 static WINDOW *Window_init(void) {
     WINDOW *this = initscr();
     int error = raw();
-    if (error == ERR) {
-        fprintf(stderr, "Fatal: unable to init graphics.\n");
-        exit(EXIT_FAILURE);
-    }
+    Window_throw_error(error == ERR, "Fatal: unable to init graphics.");
 
     error = noecho();
-    if (error == ERR) {
-        fprintf(stderr, "Fatal: unable to init graphics.\n");
-        exit(EXIT_FAILURE);
-    }
+    Window_throw_error(error == ERR, "Fatal: unable to init graphics.");
 
     error = keypad(stdscr, TRUE);
-    if (error == ERR) {
-        fprintf(stderr, "Fatal: unable to init graphics.\n");
-        exit(EXIT_FAILURE);
-    }
-    
+    Window_throw_error(error == ERR, "Fatal: unable to init graphics.");
+
     error = start_color();
-    if (error == ERR) {
-        fprintf(stderr, "Fatal: unable to init graphics.\n");
-        exit(EXIT_FAILURE);
-    }
+    Window_throw_error(error == ERR, "Fatal: unable to init graphics.");
+
+    error = curs_set(0);
+    Window_throw_error(error == ERR, "Fatal: unable to init graphics.");
 
     // TODO awful tastes
     // change that !!!
     error = init_pair(GROUND_PAIR, COLOR_YELLOW, COLOR_GREEN);
-    if (error == ERR) {
-        fprintf(stderr, "Fatal: unable to init graphics.\n");
-        exit(EXIT_FAILURE);
-    }
+    Window_throw_error(error == ERR, "Fatal: unable to init graphics.");
 
     error = init_pair(WATER_PAIR, COLOR_CYAN, COLOR_BLUE);
-    if (error == ERR) {
-        fprintf(stderr, "Fatal: unable to init graphics.\n");
-        exit(EXIT_FAILURE);
-    }
+    Window_throw_error(error == ERR, "Fatal: unable to init graphics.");
 
     error = init_pair(WALL_PAIR, COLOR_RED, COLOR_MAGENTA);
-    if (error == ERR) {
-        fprintf(stderr, "Fatal: unable to init graphics.\n");
-        exit(EXIT_FAILURE);
-    }
+    Window_throw_error(error == ERR, "Fatal: unable to init graphics.");
 
     return this;
 }
 
-extern void Window_exit(void) { //WINDOW *this) {
+extern void Window_exit(void) {
     int error = endwin();
-    if (error == ERR) {
-        fprintf(stderr, "Fatal: unable to exit.\n");
-        exit(EXIT_FAILURE);
-    }
+    Window_throw_error(error == ERR, "Fatal: unable to exit.");
 }
 
 static void Window_refresh(void) {
     int error = refresh();
-    if (error == ERR) {
-        fprintf(stderr, "Fatal: unable to refresh graphics.\n");
-        exit(EXIT_FAILURE);
-    }
+    Window_throw_error(error == ERR, "Fatal: unable to refresh graphics.");
 }
 
 static void Window_clear(void) {
     int error = clear();
-    if (error == ERR) {
-        fprintf(stderr, "Fatal: unable to init graphics.\n");
-        exit(EXIT_FAILURE);
-    }
+    Window_throw_error(error == ERR, "Fatal: unable to clear graphics.");
 }
 
 static void Window_display_center(char *msg, ...) {
@@ -118,11 +99,7 @@ static void Window_display_tile(Tile *t, int x, int y, int color) {
 
 extern void Window_display(int x, int y, char *msg, ...) {
     int error = mvprintw(x, y, msg);
-    if (error == ERR) {
-        fprintf(stderr, "Fatal: unable to display graphics.\n");
-        exit(EXIT_FAILURE);
-    }
-
+    Window_throw_error(error == ERR, "Fatal: unable to display graphics.");
     Window_refresh();
 }
 
@@ -170,5 +147,5 @@ extern void Graphics_display_field(Field *field) {
             }
         }
     }
-Window_refresh();
+    Window_refresh();
 }
