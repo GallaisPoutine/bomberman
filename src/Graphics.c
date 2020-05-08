@@ -131,13 +131,13 @@ extern void Graphics_display_field(Field *field) {
             Tile *t = Field_get_tile(field, i, j);
             switch (Tile_get_type(t)) {
             case GROUND:
-                Window_display_tile(t, i, j, COLOR_PAIR(GROUND_PAIR));
+                Window_display_tile(t, j, i, COLOR_PAIR(GROUND_PAIR));
                 break;
             case WATER:
-                Window_display_tile(t, i, j, COLOR_PAIR(WATER_PAIR));
+                Window_display_tile(t, j, i, COLOR_PAIR(WATER_PAIR));
                 break;
             case WALL:
-                Window_display_tile(t, i, j, COLOR_PAIR(WALL_PAIR));
+                Window_display_tile(t, j, i, COLOR_PAIR(WALL_PAIR));
                 break;
             default:
                 assert(Tile_get_type(t) != GROUND);

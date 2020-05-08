@@ -100,7 +100,7 @@ extern void GameEngine_start(void) {
         exit(EXIT_FAILURE);
     }
 
-    Field *f = Field_new(10, 50);
+    Field *f = Field_new(70, 30);
     Player *p = Player_new(4, 24);
     Field_add_player(f, p);
     Graphics_display_field(f);
