@@ -100,7 +100,6 @@ static void Window_display_tile(Tile *t, int x, int y, int color) {
 extern void Window_display(int x, int y, char *msg, ...) {
     int error = mvprintw(x, y, msg);
     Window_throw_error(error == ERR, "Fatal: unable to display graphics.");
-    Window_refresh();
 }
 
 extern int Graphics_getch(void) {
