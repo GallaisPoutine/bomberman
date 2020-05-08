@@ -138,17 +138,38 @@ extern void Field_bomb_has_been_planted(Field *this, Player *p) {
 extern void Field_bomb_explosion(Field *this) {
     bomb_adapter_t b = {.buffer = 0};
     Queue_receive(MQ_BOMBS_NAME, b.buffer);
+    int xMin, xMax, yMin, yMax;
     int x = Bomb_get_X(b.bomb);
     int y = Bomb_get_Y(b.bomb);
 
-    for (int i=x -BOMB_INTENSITY; i<=x +BOMB_INTENSITY; i++) {
+    if (x -BOMB_INTENSITY >= 0)
+        xMin = x -BOMB_INTENSITY;
+    else
+        xMin = 0;
+
+    if (x +BOMB_INTENSITY < Field_get_length(this))
+        xMax = x +BOMB_INTENSITY;
+    else
+        xMax = Field_get_length(this) -1;
+
+    for (int i=xMin; i<=xMax; i++) {
         Tile *ttmp = Field_get_tile(this, i, y);
         if (Tile_get_type(ttmp) != WALL && Tile_has_player(ttmp)) {
             Tile_remove_player(ttmp);
         }
     }
 
-    for (int j=y -BOMB_INTENSITY; j<=y +BOMB_INTENSITY; j++) {
+    if (y -BOMB_INTENSITY >= 0)
+        yMin = y -BOMB_INTENSITY;
+    else
+        yMin = 0;
+
+    if (y +BOMB_INTENSITY < Field_get_depth(this))
+        yMax = y +BOMB_INTENSITY;
+    else
+        yMax = Field_get_depth(this) -1;
+
+    for (int j=yMin; j<=yMax; j++) {
         Tile *ttmp = Field_get_tile(this, x, j);
         if (Tile_get_type(ttmp) != WALL && Tile_has_player(ttmp)) {
             Tile_remove_player(ttmp);
