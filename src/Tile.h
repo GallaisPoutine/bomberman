@@ -15,6 +15,7 @@ typedef enum Tile_type_t{
     GROUND = 0,
     WATER,
     WALL,
+    WOOD
 } Type;
 
 typedef struct Tile_t Tile;
@@ -40,5 +41,7 @@ extern void Tile_remove_player(Tile *this);
 extern void Tile_add_bomb(Tile *this, Bomb *bomb);
 
 extern void Tile_remove_bomb(Tile *this);
+
+extern void Tile_destroy(Tile *this);
 
 #endif //BOMBERMAN_TIMER_H

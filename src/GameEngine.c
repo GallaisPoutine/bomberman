@@ -5,14 +5,8 @@
 /**
  * IDEA BOX
  *
- * Use mqueue to manage events.
- *
  * Compose with multiple windows
  * to allow log messages.
- *
- * Put all free in GE_stop
- * (Multiple arguments function ?).
- *
  *
  **/
 
@@ -74,7 +68,6 @@ static void run(Field *f, Player *p) {
             Field_bomb_has_been_planted(f, p);
             break;
         case EV_EXPLODE:
-            // TODO find a way to transmit tile 
             Field_bomb_explosion(f);
             break;
         case EV_PAUSE:
@@ -103,8 +96,8 @@ extern void GameEngine_start(void) {
     Field *f = Field_new(70, 30);
     Player *p = Player_new(4, 24);
     Field_add_player(f, p);
+    // Field_fill(f);
     Graphics_display_field(f);
-
     run(f, p);
     free_entities(f, p);
     

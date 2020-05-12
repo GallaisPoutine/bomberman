@@ -85,3 +85,8 @@ extern void Tile_remove_bomb(Tile *this) {
         this->has_bomb = false;
     }
 }
+
+extern void Tile_destroy(Tile *this) {
+    if (this->type == WOOD)
+        this->type = GROUND;
+}

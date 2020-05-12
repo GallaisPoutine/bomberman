@@ -156,6 +156,7 @@ extern void Field_bomb_explosion(Field *this) {
         Tile *ttmp = Field_get_tile(this, i, y);
         if (Tile_get_type(ttmp) != WALL && Tile_has_player(ttmp)) {
             Tile_remove_player(ttmp);
+            Tile_destroy(ttmp);
         }
     }
 
@@ -173,9 +174,19 @@ extern void Field_bomb_explosion(Field *this) {
         Tile *ttmp = Field_get_tile(this, x, j);
         if (Tile_get_type(ttmp) != WALL && Tile_has_player(ttmp)) {
             Tile_remove_player(ttmp);
+            Tile_destroy(ttmp);
         }
     }
 
     Tile_remove_bomb(Field_get_tile(this, x, y));
-    // Bomb_free(b.bomb);
+}
+
+extern void Field_fill(Field *this) {
+    for (int i=0; i<Field_get_length(this); i++) {
+        for (int j=0; j<Field_get_depth(this); j++) {
+            if (Tile_get_type(Field_get_tile(this, i, j)) == GROUND) {
+                
+            } 
+        }
+    }
 }

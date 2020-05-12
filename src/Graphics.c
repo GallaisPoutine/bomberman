@@ -148,3 +148,43 @@ extern void Graphics_display_field(Field *field) {
     }
     Window_refresh();
 }
+
+extern void Graphics_bomb_animation(Field *this, Bomb *bomb) {
+    int xMin, xMax, yMin, yMax;
+    int x = Bomb_get_X(bomb);
+    int y = Bomb_get_Y(bomb);
+
+    if (x -BOMB_INTENSITY >= 0)
+        xMin = x -BOMB_INTENSITY;
+    else
+        xMin = 0;
+
+    if (x +BOMB_INTENSITY < Field_get_length(this))
+        xMax = x +BOMB_INTENSITY;
+    else
+        xMax = Field_get_length(this) -1;
+
+    for (int i=xMin; i<=xMax; i++) {
+        Tile *ttmp = Field_get_tile(this, i, y);
+        if (Tile_get_type(ttmp) != WALL && Tile_has_player(ttmp)) {
+            Window_display(i, y, "#");
+        }
+    }
+
+    if (y -BOMB_INTENSITY >= 0)
+        yMin = y -BOMB_INTENSITY;
+    else
+        yMin = 0;
+
+    if (y +BOMB_INTENSITY < Field_get_depth(this))
+        yMax = y +BOMB_INTENSITY;
+    else
+        yMax = Field_get_depth(this) -1;
+
+    for (int j=yMin; j<=yMax; j++) {
+        Tile *ttmp = Field_get_tile(this, x, j);
+        if (Tile_get_type(ttmp) != WALL && Tile_has_player(ttmp)) {
+            Window_display(x, j, "#");
+        }
+    }
+}

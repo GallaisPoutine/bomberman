@@ -31,4 +31,6 @@ extern void Field_bomb_has_been_planted(Field *this, Player *p);
 
 extern void Field_bomb_explosion(Field *this);
 
+extern void Field_fill(Field *this);
+
 #endif //BOMBERMAN_FIELD_H

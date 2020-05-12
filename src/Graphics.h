@@ -17,4 +17,6 @@ extern void Window_display(int x, int y, char *msg, ...);
 
 extern void Graphics_display_field(Field *field);
 
+extern void Graphics_bomb_animation(Field *field, Bomb *bomb);
+
 #endif /* BOMBERMAN_GRAPHICS_H */
