@@ -44,4 +44,6 @@ extern void Tile_remove_bomb(Tile *this);
 
 extern void Tile_destroy(Tile *this);
 
+extern void Tile_fill(Tile *this);
+
 #endif //BOMBERMAN_TIMER_H

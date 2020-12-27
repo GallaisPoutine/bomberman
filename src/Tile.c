@@ -90,3 +90,8 @@ extern void Tile_destroy(Tile *this) {
     if (this->type == WOOD)
         this->type = GROUND;
 }
+
+extern void Tile_fill(Tile *this) {
+    if (this->type == GROUND)
+        this->type = WOOD;
+}

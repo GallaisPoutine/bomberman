@@ -96,7 +96,7 @@ extern void GameEngine_start(void) {
     Field *f = Field_new(70, 30);
     Player *p = Player_new(4, 24);
     Field_add_player(f, p);
-    // Field_fill(f);
+    Field_fill(f);
     Graphics_display_field(f);
     run(f, p);
     free_entities(f, p);
