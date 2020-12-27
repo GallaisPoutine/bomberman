@@ -154,6 +154,9 @@ extern void Field_bomb_explosion(Field *this) {
 
     for (int i=xMin; i<=xMax; i++) {
         Tile *ttmp = Field_get_tile(this, i, y);
+	if (Tile_get_type(ttmp) == WALL) {
+		break;
+	}
         if (Tile_get_type(ttmp) != WALL && Tile_has_player(ttmp)) {
             Tile_remove_player(ttmp);
             Tile_destroy(ttmp);
@@ -172,6 +175,9 @@ extern void Field_bomb_explosion(Field *this) {
 
     for (int j=yMin; j<=yMax; j++) {
         Tile *ttmp = Field_get_tile(this, x, j);
+	if (Tile_get_type(ttmp) == WALL) {
+		break;
+	}
         if (Tile_get_type(ttmp) != WALL && Tile_has_player(ttmp)) {
             Tile_remove_player(ttmp);
             Tile_destroy(ttmp);

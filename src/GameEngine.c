@@ -100,7 +100,7 @@ extern void GameEngine_start(void) {
     Graphics_display_field(f);
     run(f, p);
     free_entities(f, p);
-    
+
     GameEngine_stop();
 }
 

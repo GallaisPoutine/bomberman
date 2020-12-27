@@ -12,10 +12,10 @@
 
 // typedef enum Tile_type_t Type;
 typedef enum Tile_type_t{
-    GROUND = 0,
-    WATER,
-    WALL,
-    WOOD
+    GROUND = 0,	// DEFAULT TILE TYPE
+    WATER,	// CAN'T WALK ON IT
+    WALL,	// NOT DESTROYABLE
+    WOOD	// DESTROYABLE MATERIAL
 } Type;
 
 typedef struct Tile_t Tile;
