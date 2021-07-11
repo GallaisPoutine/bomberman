@@ -80,7 +80,30 @@ static void run(Field *f, Player *p) {
     }
 }
 
+#define RANDOM(__MIN__, __MAX__) (rand() % ((__MAX__) + 1 - (__MIN__)) + (__MIN__))
+
+static void place_player(Field *f, Player *p, int xmax, int ymax) {
+	// Formula to generate a random number within interval
+	// rand() % (max_number + 1 - minimum_number) + minimum_number
+	// Position *pplayer;
+	int xrand, yrand;
+	Tile *tmptile;
+
+	do {
+		xrand = RANDOM(0, xmax);
+		yrand = RANDOM(0, ymax);
+		tmptile = Field_get_tile(f, xrand, yrand);
+	} while(Tile_get_type(tmptile) != GROUND);
+
+	Player_set_X(p, xrand +1);
+	Player_set_Y(p, yrand +1);
+}
+
+#define FIELD_WIDTH	70
+#define FIELD_HEIGHT	30
 extern void GameEngine_start(void) {
+    Player *p;
+
     Queue_init(MQ_EVENT_NAME);
     Queue_init(MQ_BOMBS_NAME);
     Graphics_greetings();
@@ -93,8 +116,9 @@ extern void GameEngine_start(void) {
         exit(EXIT_FAILURE);
     }
 
-    Field *f = Field_new(70, 30);
-    Player *p = Player_new(4, 24);
+    Field *f = Field_new(FIELD_WIDTH, FIELD_HEIGHT);
+    p = Player_new(NULL, NULL);
+    place_player(f, p, FIELD_WIDTH, FIELD_HEIGHT);
     Field_add_player(f, p);
     Field_fill(f);
     Graphics_display_field(f);

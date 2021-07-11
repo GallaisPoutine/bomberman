@@ -125,8 +125,8 @@ extern void Graphics_display_field(Field *field) {
     Window_clear();
     int length = Field_get_length(field);
     int depth = Field_get_depth(field);
-    for (int i=0; i<length; i++) {
-        for (int j=0; j<depth; j++) {
+    for (int i=LINES/2 - length/2; i<LINES/2 + length/2; i++) {
+        for (int j=COLS/2 - depth/2; j<COLS/2 + depth/2; j++) {
             Tile *t = Field_get_tile(field, i, j);
             switch (Tile_get_type(t)) {
             case GROUND:
