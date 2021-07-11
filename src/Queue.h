@@ -26,7 +26,7 @@ typedef union {
 } adapter_t;
 
 typedef union {
-    Bomb *bomb;
+    struct Bomb *bomb;
     char buffer[MAX_MSG_SIZE];
 } bomb_adapter_t;
 

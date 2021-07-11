@@ -9,28 +9,22 @@
 #include "Player.h"
 #include "Tile.h"
 
-typedef struct Field_t Field;
+struct Field {
+	int length;
+	int depth;
+	struct Tile ***grid;
+};
 
-extern Field *Field_new(int length, int depth);
+#define Field_get_tile(field, x, y) field->grid[x][y]
 
-extern void Field_free(Field *this);
+extern struct Field *Field_new(int length, int depth);
+extern void Field_free(struct Field *field);
 
-extern Tile ***Field_get_grid(Field *this);
-
-extern Tile *Field_get_tile(Field *this, int x, int y);
-
-extern int Field_get_length(Field *this);
-
-extern int Field_get_depth(Field *this);
-
-extern void Field_add_player(Field *this, Player *player);
-
-extern void Field_move_player(Field *this, Player *player, Move m);
-
-extern void Field_bomb_has_been_planted(Field *this, Player *p);
-
-extern void Field_bomb_explosion(Field *this);
-
-extern void Field_fill(Field *this);
+extern void Field_add_player(struct Field *field, struct Player *player);
+extern void Field_move_player(struct Field *field, struct Player *player,
+			      enum player_move m);
+extern void Field_bomb_has_been_planted(struct Field *field, struct Player *p);
+extern void Field_bomb_explosion(struct Field *field);
+extern void Field_fill(struct Field *field);
 
 #endif //BOMBERMAN_FIELD_H

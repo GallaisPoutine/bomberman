@@ -7,57 +7,14 @@
 
 #define BOMB_INTENSITY (3)
 
-/**
- *
- */
-typedef struct Bomb_t Bomb;
+struct Bomb {
+	struct Position *pos;
+	struct Timer *timer;
+};
 
-/**
- *
- * @return
- */
-extern Bomb * Bomb_new(int x, int y);
-
-/**
- *
- * @param this
- */
-extern void Bomb_free(Bomb *this);
-
-/**
- *
- * @param this
- * @return
- */
-extern int Bomb_get_X(Bomb *this);
-
-/**
- *
- * @param this
- * @param x
- */
-extern void Bomb_set_X(Bomb *this, int x);
-
-/**
- *
- * @param this
- * @return
- */
-extern int Bomb_get_Y(Bomb *this);
-
-/**
- *
- * @param this
- * @param y
- */
-extern void Bomb_set_Y(Bomb *this, int y);
-
-/**
- *
- * @param this
- */
-extern void Bomb_start_timer(Bomb *this);
-
-extern void Bomb_explode(Bomb *this);
+extern struct Bomb *Bomb_new(int x, int y);
+extern void Bomb_free(struct Bomb *bomb);
+extern void Bomb_start_timer(struct Bomb *bomb);
+extern void Bomb_explode(struct Bomb *bomb);
 
 #endif //BOMBERMAN_BOMB_H

@@ -8,90 +8,67 @@
 #include <malloc.h>
 #include <stdlib.h>
 
-struct Tile_t{
-    bool has_bomb;
-    bool has_player;
-    Type type;
-    Position *pos;
-    Player *player;
-    Bomb *bomb;
-};
+extern struct Tile *Tile_new(enum tile_type type, int x, int y) {
+	struct Tile *tile = (struct Tile *)malloc(sizeof(struct Tile));
+	if (!tile) {
+		fprintf(stderr, "Fatal: unable to allocate %zu bytes.\n",
+			sizeof(struct Tile));
+		exit(EXIT_FAILURE);
+	}
 
-extern Tile *Tile_new(Type type, int x, int y) {
-    Tile *this = (Tile *)malloc(sizeof(Tile));
-    if (this == NULL) {
-        fprintf(stderr, "Fatal: unable to allocate %zu bytes.\n", sizeof(Tile));
-        exit(EXIT_FAILURE);
-    }
+	tile->has_bomb = false;
+	tile->has_player = false;
+	tile->type = type;
+	tile->pos = Position_new(x, y);
 
-    this->has_bomb = false;
-    this->has_player = false;
-    this->type = type;
-    this->pos = Position_new(x, y);
+	// TODO check tile
+	tile->player = NULL;
+	tile->bomb = NULL;
 
-    // TODO check this 
-    this->player = NULL;
-    this->bomb = NULL;
-
-    return this;
+	return tile;
 }
 
-extern void Tile_free(Tile *this) {
-    assert(this != NULL);
-    Position_free(this->pos);
-    free(this);
+extern void Tile_free(struct Tile *tile) {
+	assert(tile != NULL);
+	if (!tile)
+		return;
+
+	Position_free(tile->pos);
+	Player_free(tile->player);
+	Bomb_free(tile->bomb);
+	free(tile);
 }
 
-extern Position *Tile_get_position(Tile * this) {
-    return this->pos;
+extern void Tile_add_player(struct Tile *tile, struct Player *p) {
+	tile->player = p;
+	tile->has_player = true;
 }
 
-extern Type Tile_get_type(Tile *this) {
-    return this->type;
+extern void Tile_remove_player(struct Tile *tile) {
+	if (tile->has_player) {
+		tile->player = NULL;
+		tile->has_player = false;
+	}
 }
 
-extern Bomb *Tile_get_bomb(Tile *this) {
-    return this->bomb;
+extern void Tile_add_bomb(struct Tile *tile, struct Bomb *bomb) {
+	tile->bomb = bomb;
+	tile->has_bomb = true;
 }
 
-extern bool Tile_has_player(Tile *this) {
-    return this->has_player;
+extern void Tile_remove_bomb(struct Tile *tile) {
+	if (tile->has_bomb) {
+		tile->bomb = NULL;
+		tile->has_bomb = false;
+	}
 }
 
-extern bool Tile_has_bomb(Tile *this) {
-    return this->has_bomb;
+extern void Tile_destroy(struct Tile *tile) {
+	if (tile->type == WOOD)
+		tile->type = GROUND;
 }
 
-extern void Tile_add_player(Tile *this, Player *player) {
-    this->player = player;
-    this->has_player = true;
-}
-
-extern void Tile_remove_player(Tile *this) {
-    if (this->has_player) {
-        this->player = NULL;
-        this->has_player = false;
-    }
-}
-
-extern void Tile_add_bomb(Tile *this, Bomb *bomb) {
-    this->bomb = bomb;
-    this->has_bomb = true;
-}
-
-extern void Tile_remove_bomb(Tile *this) {
-    if (this->has_bomb) {
-        this->bomb = NULL;
-        this->has_bomb = false;
-    }
-}
-
-extern void Tile_destroy(Tile *this) {
-    if (this->type == WOOD)
-        this->type = GROUND;
-}
-
-extern void Tile_fill(Tile *this) {
-    if (this->type == GROUND)
-        this->type = WOOD;
+extern void Tile_fill(struct Tile *tile) {
+	if (tile->type == GROUND)
+		tile->type = WOOD;
 }

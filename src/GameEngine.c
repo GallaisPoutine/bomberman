@@ -41,12 +41,12 @@ static void *keypad_listener() {
     return NULL;
 }
 
-static void free_entities(Field *f, Player *p) {
+static void free_entities(struct Field *f, struct Player *p) {
     Player_free(p);
     Field_free(f);
 }
 
-static void run(Field *f, Player *p) {
+static void run(struct Field *f, struct Player *p) {
     adapter_t msg = {.msg = 0};
     for ever {
         Queue_receive(MQ_EVENT_NAME, msg.buffer);
@@ -82,27 +82,27 @@ static void run(Field *f, Player *p) {
 
 #define RANDOM(__MIN__, __MAX__) (rand() % ((__MAX__) + 1 - (__MIN__)) + (__MIN__))
 
-static void place_player(Field *f, Player *p, int xmax, int ymax) {
+static void place_player(struct Field *f, struct Player *p, int xmax, int ymax) {
 	// Formula to generate a random number within interval
 	// rand() % (max_number + 1 - minimum_number) + minimum_number
 	// Position *pplayer;
 	int xrand, yrand;
-	Tile *tmptile;
+	struct Tile *ttmp;
 
 	do {
 		xrand = RANDOM(0, xmax);
 		yrand = RANDOM(0, ymax);
-		tmptile = Field_get_tile(f, xrand, yrand);
-	} while(Tile_get_type(tmptile) != GROUND);
+		ttmp = Field_get_tile(f, xrand, yrand);
+	} while(ttmp->type != GROUND);
 
-	Player_set_X(p, xrand +1);
-	Player_set_Y(p, yrand +1);
+	p->pos->x = ++xrand;
+	p->pos->y = ++yrand;
 }
 
 #define FIELD_WIDTH	70
 #define FIELD_HEIGHT	30
 extern void GameEngine_start(void) {
-    Player *p;
+    struct Player *p;
 
     Queue_init(MQ_EVENT_NAME);
     Queue_init(MQ_BOMBS_NAME);
@@ -116,8 +116,8 @@ extern void GameEngine_start(void) {
         exit(EXIT_FAILURE);
     }
 
-    Field *f = Field_new(FIELD_WIDTH, FIELD_HEIGHT);
-    p = Player_new(NULL, NULL);
+    struct Field *f = Field_new(FIELD_WIDTH, FIELD_HEIGHT);
+    p = Player_new(0, 0);
     place_player(f, p, FIELD_WIDTH, FIELD_HEIGHT);
     Field_add_player(f, p);
     Field_fill(f);

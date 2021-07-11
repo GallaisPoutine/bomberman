@@ -4,6 +4,6 @@
 
 #include "Map.h"
 
-extern void Map_generate_stage_1(Field *f, int sizeX, int sizeY) {
-    
+extern void Map_generate_stage_1(struct Field *field, int sizeX, int sizeY) {
+
 }

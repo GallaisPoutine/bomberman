@@ -84,11 +84,11 @@ static void Window_display_center(char *msg, ...) {
     Window_display(LINES/2, (COLS/2) -(strlen(msg)/2), msg);
 }
 
-static void Window_display_tile(Tile *t, int x, int y, int color) {
+static void Window_display_tile(struct Tile *tile, int x, int y, int color) {
     attron(color);
-    if (Tile_has_player(t)) {
+    if (tile->has_player) {
         Window_display(x, y, PLAYER);
-    } else if(Tile_has_bomb(t)) {
+    } else if(tile->has_bomb) {
         Window_display(x, y, BOMB);
     } else {
         // ASSERT ?
@@ -121,27 +121,26 @@ extern void Graphics_greetings(void) {
 /**
  * Premier essai
  **/
-extern void Graphics_display_field(Field *field) {
+extern void Graphics_display_field(struct Field *field) {
     Window_clear();
-    int length = Field_get_length(field);
-    int depth = Field_get_depth(field);
-    for (int i=LINES/2 - length/2; i<LINES/2 + length/2; i++) {
-        for (int j=COLS/2 - depth/2; j<COLS/2 + depth/2; j++) {
-            Tile *t = Field_get_tile(field, i, j);
-            switch (Tile_get_type(t)) {
+
+    for (int i = 0; i < field->length; i++) {
+        for (int j = 0; j < field->depth; j++) {
+            struct Tile *tile = Field_get_tile(field, i, j);
+            switch (tile->type) {
             case GROUND:
-                Window_display_tile(t, j, i, COLOR_PAIR(GROUND_PAIR));
+                Window_display_tile(tile, j, i, COLOR_PAIR(GROUND_PAIR));
                 break;
             case WATER:
-                Window_display_tile(t, j, i, COLOR_PAIR(WATER_PAIR));
+                Window_display_tile(tile, j, i, COLOR_PAIR(WATER_PAIR));
                 break;
             case WALL:
-                Window_display_tile(t, j, i, COLOR_PAIR(WALL_PAIR));
+                Window_display_tile(tile, j, i, COLOR_PAIR(WALL_PAIR));
                 break;
             default:
-                assert(Tile_get_type(t) != GROUND);
-                assert(Tile_get_type(t) != WATER);
-                assert(Tile_get_type(t) != WALL);
+                assert(tile->type != GROUND);
+                assert(tile->type != WATER);
+                assert(tile->type != WALL);
                 break;
             }
         }
@@ -149,42 +148,40 @@ extern void Graphics_display_field(Field *field) {
     Window_refresh();
 }
 
-extern void Graphics_bomb_animation(Field *this, Bomb *bomb) {
+extern void Graphics_bomb_animation(struct Field *this, struct Bomb *bomb) {
     int xMin, xMax, yMin, yMax;
-    int x = Bomb_get_X(bomb);
-    int y = Bomb_get_Y(bomb);
 
-    if (x -BOMB_INTENSITY >= 0)
-        xMin = x -BOMB_INTENSITY;
+    if (bomb->pos->x - BOMB_INTENSITY >= 0)
+        xMin = bomb->pos->x - BOMB_INTENSITY;
     else
         xMin = 0;
 
-    if (x +BOMB_INTENSITY < Field_get_length(this))
-        xMax = x +BOMB_INTENSITY;
+    if (bomb->pos->x + BOMB_INTENSITY < this->length)
+        xMax = bomb->pos->x + BOMB_INTENSITY;
     else
-        xMax = Field_get_length(this) -1;
+        xMax = this->length - 1;
 
-    for (int i=xMin; i<=xMax; i++) {
-        Tile *ttmp = Field_get_tile(this, i, y);
-        if (Tile_get_type(ttmp) != WALL && Tile_has_player(ttmp)) {
-            Window_display(i, y, "#");
+    for (int i = xMin; i <= xMax; i++) {
+        struct Tile *ttmp = Field_get_tile(this, i, bomb->pos->y);
+        if (ttmp->type != WALL && ttmp->has_player) {
+            Window_display(i, bomb->pos->y, "#");
         }
     }
 
-    if (y -BOMB_INTENSITY >= 0)
-        yMin = y -BOMB_INTENSITY;
+    if (bomb->pos->y - BOMB_INTENSITY >= 0)
+        yMin = bomb->pos->y - BOMB_INTENSITY;
     else
         yMin = 0;
 
-    if (y +BOMB_INTENSITY < Field_get_depth(this))
-        yMax = y +BOMB_INTENSITY;
+    if (bomb->pos->y + BOMB_INTENSITY < this->depth)
+        yMax = bomb->pos->y + BOMB_INTENSITY;
     else
-        yMax = Field_get_depth(this) -1;
+        yMax = this->depth - 1;
 
-    for (int j=yMin; j<=yMax; j++) {
-        Tile *ttmp = Field_get_tile(this, x, j);
-        if (Tile_get_type(ttmp) != WALL && Tile_has_player(ttmp)) {
-            Window_display(x, j, "#");
+    for (int j = yMin; j <= yMax; j++) {
+        struct Tile *ttmp = Field_get_tile(this, bomb->pos->x, j);
+        if (ttmp->type != WALL && ttmp->has_player) {
+            Window_display(bomb->pos->x, j, "#");
         }
     }
 }

@@ -9,42 +9,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct Position_t {
-    int x;
-    int y;
-};
 
-extern Position *Position_new(int x, int y) {
-    Position *this;
-    this = (Position *) malloc(sizeof(Position));
-    if (this == NULL) {
-        fprintf(stderr, "Fatal: unable to allocate %zu bytes.\n", sizeof(Position));
-        exit(EXIT_FAILURE);
-    }
+extern struct Position *Position_new(int x, int y) {
+	struct Position *pos = (struct Position *) malloc(sizeof(struct Position));
+	if (!pos) {
+		fprintf(stderr, "Fatal: unable to allocate %zu bytes.\n",
+			sizeof(struct Position));
+		exit(EXIT_FAILURE);
+	}
 
-    this->x = x;
-    this->y = y;
+	pos->x = x;
+	pos->y = y;
 
-    return this;
+	return pos;
 }
 
-extern void Position_free(Position *this) {
-    assert(this != NULL);
-    free(this);
-}
+extern void Position_free(struct Position *pos) {
+	assert(pos != NULL);
 
-extern int Position_get_X(Position *this) {
-    return this->x;
-}
+	if (!pos)
+		return;
 
-extern void Position_set_X(Position *this, int x) {
-    this->x = x;
-}
-
-extern int Position_get_Y(Position *this) {
-    return this->y;
-}
-
-extern void Position_set_Y(Position *this, int y) {
-    this->y = y;
+	free(pos);
 }

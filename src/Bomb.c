@@ -12,59 +12,43 @@
 #include "Queue.h"
 #include "Timer.h"
 
-struct Bomb_t {
-    Position *pos;
-    Timer *timer;
-};
 
-extern Bomb * Bomb_new(int x, int y) {
-    Bomb * this;
-    this = (Bomb *) malloc(sizeof(Bomb));
-    if (this == NULL){
-        fprintf(stderr, "Fatal: unable to allocate %zu bytes.\n", sizeof(Bomb));
-        exit(EXIT_FAILURE);
-    }
+extern struct Bomb * Bomb_new(int x, int y) {
+	struct Bomb * bomb = (struct Bomb *) malloc(sizeof(struct Bomb));
+	if (!bomb){
+		fprintf(stderr, "Fatal: unable to allocate %zu bytes.\n",
+			sizeof(struct Bomb));
+		exit(EXIT_FAILURE);
+	}
 
-    this->pos = Position_new(x, y);
-    return this;
+	bomb->pos = Position_new(x, y);
+	return bomb;
 }
 
-extern void Bomb_free(Bomb *this) {
-    assert(this != NULL);
-    Position_free(this->pos);
-    Timer_free(this->timer);
-    free(this);
+extern void Bomb_free(struct Bomb *bomb) {
+	assert(bomb != NULL);
+	if (!bomb)
+		return;
+
+	Position_free(bomb->pos);
+	Timer_free(bomb->timer);
+	free(bomb);
 }
 
-extern int Bomb_get_X(Bomb *this) {
-    return Position_get_X(this->pos);
+extern void Bomb_start_timer(struct Bomb *bomb) {
+	bomb->timer = Timer_new(NOMINAL_BOMB_DELAY,
+				(Timer_callback) Bomb_explode, bomb);
+	Timer_start(bomb->timer);
 }
 
-extern void Bomb_set_X(Bomb *this, int x) {
-    Position_set_X(this->pos, x);
-}
-
-extern int Bomb_get_Y(Bomb *this) {
-    return Position_get_Y(this->pos);
-}
-
-extern void Bomb_set_Y(Bomb *this, int y) {
-    Position_set_Y(this->pos, y);
-}
-
-extern void Bomb_start_timer(Bomb *this) {
-    this->timer = Timer_new(NOMINAL_BOMB_DELAY, (Timer_callback) Bomb_explode, this);
-    Timer_start(this->timer);
-}
-
-// TODO For tnow this is clearly a stub
+// TODO For tnow bomb is clearly a stub
 // Send event in BAL ??
-extern void Bomb_explode(Bomb *this) {
-    // TODO manage
-    adapter_t msg = {.msg = EV_EXPLODE};
+extern void Bomb_explode(struct Bomb *bomb) {
+	// TODO manage
+	adapter_t msg = {.msg = EV_EXPLODE};
 
-    Queue_send(MQ_EVENT_NAME, msg.buffer);
+	Queue_send(MQ_EVENT_NAME, msg.buffer);
 
-    // TODO destroy things
-    Timer_free(this->timer);
+	// TODO destroy things
+	Timer_free(bomb->timer);
 }
