@@ -89,6 +89,7 @@ static void place_player(struct Field *f, struct Player *p, int xmax, int ymax) 
 	int xrand, yrand;
 	struct Tile *ttmp;
 
+	srand(time(NULL));
 	do {
 		xrand = RANDOM(0, xmax);
 		yrand = RANDOM(0, ymax);
